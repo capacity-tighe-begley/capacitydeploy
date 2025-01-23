@@ -130,8 +130,6 @@ if ($env:SystemDrive -ne 'X:') {
     Set-ExecutionPolicy Bypass -Force
 
     iex (irm functions.tighenet.com)
-    
-    Create-NewLocalAdmin
 
     #Setup Post Actions Scheduled Task
     iex (irm postactiontask.tighenet.com)
