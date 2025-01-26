@@ -18,7 +18,7 @@ function Write-DarkGrayDate {
     if ($Message) {
         Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) $Message"
     } else {
-        Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) " -NoNewline
+        Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) "
     }
 }
 function Write-DarkGrayHost {
@@ -43,7 +43,7 @@ function Write-SectionHeader {
         $Message
     )
     Write-DarkGrayLine
-    Write-DarkGrayDate
+    Write-DarkGrayDate -Message $Message
     Write-Host -ForegroundColor Cyan $Message
 }
 function Write-SectionSuccess {
@@ -142,7 +142,7 @@ if ($env:SystemDrive -eq 'X:') {
     Start-Transcript -Path $env:TEMP\$LogName -Append -Force
 }
 Write-SectionHeader -Message "Starting $ScriptName $ScriptVersion"
-write-host "Added Function New-SetupCompleteOSDCloudFiles" -ForegroundColor Green
+Write-DarkGrayHost -Message "Added Function New-SetupCompleteOSDCloudFiles"
 
 
 <#
