@@ -35,6 +35,9 @@ New-ItemProperty -Path $RegistryPath -Name "TriggerPostActions" -PropertyType dw
 #Import Functions from GitHUb
 iex (irm functions.tighenet.com)
 
+#Run PreSet Capacity
+iex (irm preset-capacity.tighenet.com)
+
 #Update TimeZone 
 Set-TimeZoneFromIP
 

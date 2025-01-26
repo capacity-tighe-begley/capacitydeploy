@@ -960,12 +960,3 @@ if ((Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer -match "Dell"
 	iex (irm https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/devicesdell.psm1)
 }
 
-write-host "Branch Cache 2Pint Scripts" -ForegroundColor Cyan
-
-Write-Host -ForegroundColor Green "[+] Function Setup-BranchCache"
-function Setup-BranchCache {
-	iex (irm 'https://raw.githubusercontent.com/2pintsoftware/BranchCache/refs/heads/master/ConfigMgr%20Configuration%20Item%20(CI)%20to%20Enable%20and%20Tune%20BranchCache/Source/MAIN_REMEDIATE.ps1')
- 	iex (irm 'https://raw.githubusercontent.com/2pintsoftware/BranchCache/refs/heads/master/ConfigMgr%20Configuration%20Item%20(CI)%20to%20Enable%20and%20Tune%20BranchCache/Source/CacheSize_REMEDIATE.ps1')
- }
-
-

@@ -60,84 +60,7 @@ $ScriptVersion = '25.1.22.1'
     #endregion
 
 iex (irm functions.tighenet.com)
-#region functions
-<#
-function Set-SetupCompleteCreateStartHOPEonUSB {
-    
-    $OSDCloudUSB = Get-Volume.usb | Where-Object {($_.FileSystemLabel -match 'OSDCloud') -or ($_.FileSystemLabel -match 'BHIMAGE')} | Select-Object -First 1
-    $SetupCompletePath = "$($OSDCloudUSB.DriveLetter):\OSDCloud\Config\Scripts\SetupComplete"
-    $ScriptsPath = $SetupCompletePath
 
-    if (!(Test-Path -Path $ScriptsPath)){New-Item -Path $ScriptsPath -ItemType Directory -Force}
-
-    $RunScript = @(@{ Script = "SetupComplete"; BatFile = 'SetupComplete.cmd'; ps1file = 'SetupComplete.ps1';Type = 'Setup'; Path = "$ScriptsPath"})
-
-
-    Write-Output "Creating $($RunScript.Script) Files"
-
-    $BatFilePath = "$($RunScript.Path)\$($RunScript.batFile)"
-    $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1File)"
-            
-    #Create Batch File to Call PowerShell File
-    if (Test-Path -Path $PSFilePath){
-        copy-item $PSFilePath -Destination "$ScriptsPath\SetupComplete.ps1.bak"
-    }        
-    New-Item -Path $BatFilePath -ItemType File -Force
-    $CustomActionContent = New-Object system.text.stringbuilder
-    [void]$CustomActionContent.Append('%windir%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy ByPass -File C:\OSDCloud\Scripts\SetupComplete\SetupComplete.ps1')
-    Add-Content -Path $BatFilePath -Value $CustomActionContent.ToString()
-
-    #Create PowerShell File to do actions
-
-    New-Item -Path $PSFilePath -ItemType File -Force
-    Add-Content -path $PSFilePath "Write-Output 'Starting SetupComplete HOPE Script Process'"
-    Add-Content -path $PSFilePath "Write-Output 'iex (irm deploy.tighenet.com)'"
-    Add-Content -path $PSFilePath 'if ((Test-WebConnection) -ne $true){Write-error "No Internet, Sleeping 2 Minutes" ; start-sleep -seconds 120}'
-    Add-Content -path $PSFilePath 'iex (irm deploy.tighenet.com)'
-}
-
-Function Restore-SetupCompleteOriginal {
-    $OSDCloudUSB = Get-Volume.usb | Where-Object {($_.FileSystemLabel -match 'OSDCloud') -or ($_.FileSystemLabel -match 'BHIMAGE')} | Select-Object -First 1
-    $SetupCompletePath = "$($OSDCloudUSB.DriveLetter):\OSDCloud\Config\Scripts\SetupComplete"
-    $ScriptsPath = $SetupCompletePath
-    if (Test-Path -Path "$ScriptsPath\SetupComplete.ps1.bak"){
-        copy-item -Path "$ScriptsPath\SetupComplete.ps1.bak" -Destination "$ScriptsPath\SetupComplete.ps1"
-    }
-}
-#>
-
-function Create-SetupCompleteOSDCloudFiles{
-    
-    $SetupCompletePath = "C:\OSDCloud\Scripts\SetupComplete"
-    $ScriptsPath = $SetupCompletePath
-
-    if (!(Test-Path -Path $ScriptsPath)){New-Item -Path $ScriptsPath -ItemType Directory -Force | Out-Null}
-
-    $RunScript = @(@{ Script = "SetupComplete"; BatFile = 'SetupComplete.cmd'; ps1file = 'SetupComplete.ps1';Type = 'Setup'; Path = "$ScriptsPath"})
-
-    Write-Output "Creating $($RunScript.Script) Files in $SetupCompletePath"
-
-    $BatFilePath = "$($RunScript.Path)\$($RunScript.batFile)"
-    $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1File)"
-            
-    #Create Batch File to Call PowerShell File
-    if (Test-Path -Path $PSFilePath){
-        copy-item $PSFilePath -Destination "$ScriptsPath\SetupComplete.ps1.bak"
-    }        
-    New-Item -Path $BatFilePath -ItemType File -Force
-    $CustomActionContent = New-Object system.text.stringbuilder
-    [void]$CustomActionContent.Append('%windir%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy ByPass -File C:\OSDCloud\Scripts\SetupComplete\SetupComplete.ps1')
-    Add-Content -Path $BatFilePath -Value $CustomActionContent.ToString()
-
-    #Create PowerShell File to do actions
-
-    New-Item -Path $PSFilePath -ItemType File -Force
-    Add-Content -path $PSFilePath "Write-Output 'Starting SetupComplete HOPE Script Process'"
-    Add-Content -path $PSFilePath "Write-Output 'iex (irm deploy.tighenet.com)'"
-    Add-Content -path $PSFilePath 'if ((Test-WebConnection) -ne $true){Write-error "No Internet, Sleeping 2 Minutes" ; start-sleep -seconds 120}'
-    Add-Content -path $PSFilePath 'iex (irm deploy.tighenet.com)'
-}
-#endregion
 if ($env:SystemDrive -eq 'X:') {
     $LogName = "Hope-$((Get-Date).ToString('yyyy-MM-dd-HHmmss')).log"
     Start-Transcript -Path $env:TEMP\$LogName -Append -Force
@@ -145,13 +68,6 @@ if ($env:SystemDrive -eq 'X:') {
 Write-SectionHeader -Message "Starting $ScriptName $ScriptVersion"
 write-host "Added Function Create-SetupCompleteOSDCloudFiles" -ForegroundColor Green
 
-
-<#
-if ($env:SystemDrive -ne 'X:') {
-    Write-Host -ForegroundColor Yellow "Restart after Script Completes?"
-    $Restart = Read-Host "y or n, then Enter"
-}
-#>
 
 
 Set-ExecutionPolicy Bypass -Force
@@ -208,15 +124,7 @@ if ($env:SystemDrive -ne 'X:') {
         iex (irm https://raw.githubusercontent.com/suazione/CodeDump/main/Set-ConfigureChatAutoInstall.ps1)
     }
     catch {}
-    # # Add Hope PDF to Desktop
-    # Write-Host -ForegroundColor Gray "**Adding HOPE PDF to Desktop**" 
-    # try {
-    #     Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/gwblok/garytown/85ad154fa2964ea4757a458dc5c91aea5bf483c6/HopeForUsedComputers/Hope%20for%20Used%20Computers%20PDF.pdf" -OutFile "C:\Users\Public\Desktop\Hope For Used Computers.pdf"
-    # }
-    # catch {}
-
-    #Set DO
-    #Set-DOPoliciesGPORegistry
+    
     
     Write-SectionHeader -Message "**Running Test.tighenet.com**" 
     iex (irm test.tighenet.com)
@@ -231,8 +139,8 @@ if ($env:SystemDrive -ne 'X:') {
     #Enable "Notify me when a restart is required to finish updating"
     New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings -Name RestartNotificationsAllowed2 -PropertyType dword -Value 1
 
-    Write-SectionHeader -Message  "**Setting Default Profile Personal Preferences**" 
-    Set-DefaultProfilePersonalPref
+    # Write-SectionHeader -Message  "**Setting Default Profile Personal Preferences**" 
+    # Set-DefaultProfilePersonalPref
     
     #Try to prevent crap from auto installing
     Write-Host -ForegroundColor Gray "**Disabling Cloud Content**" 
