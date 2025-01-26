@@ -1,4 +1,4 @@
-#to Run, boot OSDCloudUSB, at the PS Prompt: iex (irm win11.garytown.com)
+#to Run, boot OSDCloudUSB, at the PS Prompt: iex (irm win11.tighenet.com)
 
     #region Initialization
     function Write-DarkGrayDate {
@@ -52,10 +52,10 @@
     }
     #endregion
 
-$ScriptName = 'win11.garytown.com'
+$ScriptName = 'win11.tighenet.com'
 $ScriptVersion = '25.01.22.1'
 Write-Host -ForegroundColor Green "$ScriptName $ScriptVersion"
-#iex (irm functions.garytown.com) #Add custom functions used in Script Hosting in GitHub
+#iex (irm functions.tighenet.com) #Add custom functions used in Script Hosting in GitHub
 #iex (irm functions.osdcloud.com) #Add custom fucntions from OSDCloud
 
 <# Offline Driver Details
@@ -181,4 +181,4 @@ if ($Manufacturer -match "Lenovo") {
     Copy-PSModuleToFolder -Name LSUClient -Destination "$PowerShellSavePath\Modules"
 }
 #Restart
-restart-computer
+#restart-computer
