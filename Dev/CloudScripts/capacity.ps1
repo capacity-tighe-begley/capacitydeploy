@@ -59,37 +59,37 @@ function Disable-Recall {
     Dism /Online /Disable-Feature /Featurename:Recall /NoRestart | Out-Null
 }
 
-function Remove-Apps {
-    # Bloatware Apps
-    Get-AppxPackage -AllUsers | Where-Object { $appxPackages -contains $_.Name } | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Out-Null
-    # Legacy Windows Features & Apps
-    Get-WindowsCapability -Online | Where-Object { $capabilities -contains ($_.Name -split '~')[0] } | Remove-WindowsCapability -Online -ErrorAction SilentlyContinue | Out-Null
+# function Remove-Apps {
+#     # Bloatware Apps
+#     Get-AppxPackage -AllUsers | Where-Object { $appxPackages -contains $_.Name } | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Out-Null
+#     # Legacy Windows Features & Apps
+#     Get-WindowsCapability -Online | Where-Object { $capabilities -contains ($_.Name -split '~')[0] } | Remove-WindowsCapability -Online -ErrorAction SilentlyContinue | Out-Null
 
-    $appxPackages = @(
-    'Microsoft.Microsoft3DViewer', 'Microsoft.BingSearch', 'Microsoft.WindowsCamera', 'Clipchamp.Clipchamp',
-    'Microsoft.WindowsAlarms', 'Microsoft.549981C3F5F10', 'Microsoft.Windows.DevHome',
-    'MicrosoftCorporationII.MicrosoftFamily', 'Microsoft.WindowsFeedbackHub', 'Microsoft.GetHelp',
-    'microsoft.windowscommunicationsapps', 'Microsoft.WindowsMaps', 'Microsoft.ZuneVideo',
-    'Microsoft.BingNews', 'Microsoft.MicrosoftOfficeHub', 'Microsoft.Office.OneNote',
-    'Microsoft.OutlookForWindows', 'Microsoft.People', 'Microsoft.Windows.Photos',
-    'Microsoft.PowerAutomateDesktop', 'MicrosoftCorporationII.QuickAssist', 'Microsoft.SkypeApp',
-    'Microsoft.MicrosoftSolitaireCollection', 'Microsoft.MicrosoftStickyNotes', 'MSTeams',
-    'Microsoft.Getstarted', 'Microsoft.Todos', 'Microsoft.WindowsSoundRecorder', 'Microsoft.BingWeather',
-    'Microsoft.ZuneMusic', 'Microsoft.WindowsTerminal', 'Microsoft.Xbox.TCUI', 'Microsoft.XboxApp',
-    'Microsoft.XboxGameOverlay', 'Microsoft.XboxGamingOverlay', 'Microsoft.XboxIdentityProvider',
-    'Microsoft.XboxSpeechToTextOverlay', 'Microsoft.GamingApp', 'Microsoft.YourPhone', 'Microsoft.OneDrive',
-    'Microsoft.549981C3F5F10', 'Microsoft.MixedReality.Portal', 'Microsoft.ScreenSketch'
-    'Microsoft.Windows.Ai.Copilot.Provider', 'Microsoft.Copilot', 'Microsoft.Copilot_8wekyb3d8bbwe',
-    'Microsoft.WindowsMeetNow', 'Microsoft.WindowsStore', 'Microsoft.Paint', 'Microsoft.MSPaint'
-)
+#     $appxPackages = @(
+#     'Microsoft.Microsoft3DViewer', 'Microsoft.BingSearch', 'Microsoft.WindowsCamera', 'Clipchamp.Clipchamp',
+#     'Microsoft.WindowsAlarms', 'Microsoft.549981C3F5F10', 'Microsoft.Windows.DevHome',
+#     'MicrosoftCorporationII.MicrosoftFamily', 'Microsoft.WindowsFeedbackHub', 'Microsoft.GetHelp',
+#     'microsoft.windowscommunicationsapps', 'Microsoft.WindowsMaps', 'Microsoft.ZuneVideo',
+#     'Microsoft.BingNews', 'Microsoft.MicrosoftOfficeHub', 'Microsoft.Office.OneNote',
+#     'Microsoft.OutlookForWindows', 'Microsoft.People', 'Microsoft.Windows.Photos',
+#     'Microsoft.PowerAutomateDesktop', 'MicrosoftCorporationII.QuickAssist', 'Microsoft.SkypeApp',
+#     'Microsoft.MicrosoftSolitaireCollection', 'Microsoft.MicrosoftStickyNotes', 'MSTeams',
+#     'Microsoft.Getstarted', 'Microsoft.Todos', 'Microsoft.WindowsSoundRecorder', 'Microsoft.BingWeather',
+#     'Microsoft.ZuneMusic', 'Microsoft.WindowsTerminal', 'Microsoft.Xbox.TCUI', 'Microsoft.XboxApp',
+#     'Microsoft.XboxGameOverlay', 'Microsoft.XboxGamingOverlay', 'Microsoft.XboxIdentityProvider',
+#     'Microsoft.XboxSpeechToTextOverlay', 'Microsoft.GamingApp', 'Microsoft.YourPhone', 'Microsoft.OneDrive',
+#     'Microsoft.549981C3F5F10', 'Microsoft.MixedReality.Portal', 'Microsoft.ScreenSketch'
+#     'Microsoft.Windows.Ai.Copilot.Provider', 'Microsoft.Copilot', 'Microsoft.Copilot_8wekyb3d8bbwe',
+#     'Microsoft.WindowsMeetNow', 'Microsoft.WindowsStore', 'Microsoft.Paint', 'Microsoft.MSPaint'
+# )
 
-    # Define Windows Capabilities
-    $capabilities = @(
-    'Browser.InternetExplorer', 'MathRecognizer', 'OpenSSH.Client',
-    'Microsoft.Windows.PowerShell.ISE', 'App.Support.QuickAssist', 'App.StepsRecorder',
-    'Media.WindowsMediaPlayer', 'Microsoft.Windows.WordPad', 'Microsoft.Windows.MSPaint'
-)
-}
+#     # Define Windows Capabilities
+#     $capabilities = @(
+#     'Browser.InternetExplorer', 'MathRecognizer', 'OpenSSH.Client',
+#     'Microsoft.Windows.PowerShell.ISE', 'App.Support.QuickAssist', 'App.StepsRecorder',
+#     'Media.WindowsMediaPlayer', 'Microsoft.Windows.WordPad', 'Microsoft.Windows.MSPaint'
+# )
+# }
 
 Set-ExecutionPolicy -ExecutionPolicy Bypass
 
@@ -97,4 +97,4 @@ Set-AppsRegistry
 Remove-OneDrive
 Uninstall-OneDrive
 Disable-Recall
-Remove-Apps
+# Remove-Apps
