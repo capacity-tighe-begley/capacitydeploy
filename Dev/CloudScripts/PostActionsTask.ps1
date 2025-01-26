@@ -44,9 +44,6 @@ Invoke-UpdateScanMethodMSStore
 #Enable Microsoft Other Updates:
 (New-Object -com "Microsoft.Update.ServiceManager").AddService2("7971f918-a847-4430-9279-4a52d1efe18d",7,"")
 
-#Disable Connecting a MS Account
-New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name NoConnectedUser -PropertyType dword -Value 3
-
 #Enable "Notify me when a restart is required to finish updating"
 New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings -Name RestartNotificationsAllowed2 -PropertyType dword -Value 1
 

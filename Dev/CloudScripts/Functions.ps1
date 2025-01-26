@@ -744,6 +744,25 @@ function Set-LatestUpdatesASAPEnabled {
         Invoke-Exe reg add HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings /V IsContinuousInnovationOptedIn /T REG_DWORD /D 1 /F
     }
 }
+
+Write-Host -ForegroundColor Green "[+] Function Set-ByPassOOBE"
+function Set-ByPassOOBE {
+    Write-Host "ByPass OOBE" -ForegroundColor DarkGray
+    if ($env:SystemDrive -eq 'X:') {
+        $WindowsPhase = 'WinPE'
+    }
+    if ($WindowsPhase -eq 'WinPE'){
+        Invoke-Exe reg load HKLM\TempSOFTWARE "C:\Windows\System32\Config\SOFTWARE"
+        Invoke-Exe reg add HKLM\TempSOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
+        Invoke-Exe reg add HKLM\TempSOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
+        Invoke-Exe reg unload HKLM\TempSOFTWARE
+    }
+    else {
+        Invoke-Exe reg add HKLM\Software\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
+        Invoke-Exe reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
+    }
+}
+
 Write-Host -ForegroundColor Green "[+] Function Set-APEnterprise"
 function Set-APEnterprise {
     Install-Nuget
