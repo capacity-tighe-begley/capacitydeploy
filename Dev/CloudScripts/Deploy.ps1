@@ -15,12 +15,11 @@ $ScriptVersion = '25.1.22.1'
             [System.String]
             $Message
         )
-        $dateString = Get-Date -Format 'yyyy-MM-dd-HHmmss'
         if ($Message) {
-            Write-Host -ForegroundColor DarkGray "$dateString $Message"
+            Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) $Message"
         }
         else {
-            Write-Host -ForegroundColor DarkGray "$dateString " -NoNewline
+            Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) " -NoNewline
         }
     }
     function Write-DarkGrayHost {
@@ -35,13 +34,13 @@ $ScriptVersion = '25.1.22.1'
     function Write-DarkGrayLine {
         [CmdletBinding()]
         param ()
-        Write-Host '=========================================================================' -ForegroundColor DarkGray
+        Write-Host -ForegroundColor DarkGray '========================================================================='
     }
     function Write-SectionHeader {
         [CmdletBinding()]
         param (
             [Parameter(Mandatory = $true, Position = 0)]
-            [string]
+            [System.String]
             $Message
         )
         Write-DarkGrayLine
@@ -62,19 +61,17 @@ $ScriptVersion = '25.1.22.1'
 
 iex (irm functions.tighenet.com)
 #region functions
-<#
-function Set-SetupCompleteCreateStartHOPEonUSB {
+
+function New-SetupCompleteOSDCloudFiles{
     
-    $OSDCloudUSB = Get-Volume.usb | Where-Object {($_.FileSystemLabel -match 'OSDCloud') -or ($_.FileSystemLabel -match 'BHIMAGE')} | Select-Object -First 1
-    $SetupCompletePath = "$($OSDCloudUSB.DriveLetter):\OSDCloud\Config\Scripts\SetupComplete"
+    $SetupCompletePath = "C:\OSDCloud\Scripts\SetupComplete"
     $ScriptsPath = $SetupCompletePath
 
-    if (!(Test-Path -Path $ScriptsPath)){New-Item -Path $ScriptsPath -ItemType Directory -Force}
+    if (!(Test-Path -Path $ScriptsPath)){New-Item -Path $ScriptsPath -ItemType Directory -Force | Out-Null}
 
     $RunScript = @(@{ Script = "SetupComplete"; BatFile = 'SetupComplete.cmd'; ps1file = 'SetupComplete.ps1';Type = 'Setup'; Path = "$ScriptsPath"})
 
-
-    Write-Output "Creating $($RunScript.Script) Files"
+    Write-Output "Creating $($RunScript.Script) Files in $SetupCompletePath"
 
     $BatFilePath = "$($RunScript.Path)\$($RunScript.batFile)"
     $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1File)"
@@ -96,61 +93,13 @@ function Set-SetupCompleteCreateStartHOPEonUSB {
     Add-Content -path $PSFilePath 'if ((Test-WebConnection) -ne $true){Write-error "No Internet, Sleeping 2 Minutes" ; start-sleep -seconds 120}'
     Add-Content -path $PSFilePath 'iex (irm deploy.tighenet.com)'
 }
-
-Function Restore-SetupCompleteOriginal {
-    $OSDCloudUSB = Get-Volume.usb | Where-Object {($_.FileSystemLabel -match 'OSDCloud') -or ($_.FileSystemLabel -match 'BHIMAGE')} | Select-Object -First 1
-    $SetupCompletePath = "$($OSDCloudUSB.DriveLetter):\OSDCloud\Config\Scripts\SetupComplete"
-    $ScriptsPath = $SetupCompletePath
-    if (Test-Path -Path "$ScriptsPath\SetupComplete.ps1.bak"){
-        copy-item -Path "$ScriptsPath\SetupComplete.ps1.bak" -Destination "$ScriptsPath\SetupComplete.ps1"
-    }
-}
-#>
-
-function Create-SetupCompleteOSDCloudFiles {
-    $SetupCompletePath = "C:\OSDCloud\Scripts\SetupComplete"
-    $ScriptsPath = $SetupCompletePath
-
-    if (!(Test-Path -Path $ScriptsPath)) {
-        New-Item -Path $ScriptsPath -ItemType Directory -Force | Out-Null
-    }
-
-    $RunScript = @{
-        Script = "SetupComplete"
-        BatFile = 'SetupComplete.cmd'
-        ps1file = 'SetupComplete.ps1'
-        Type = 'Setup'
-        Path = "$ScriptsPath"
-    }
-
-    Write-Output "Creating $($RunScript.Script) Files in $SetupCompletePath"
-
-    $BatFilePath = "$($RunScript.Path)\$($RunScript.BatFile)"
-    $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1file)"
-
-    # Create Batch File to Call PowerShell File
-    if (Test-Path -Path $PSFilePath) {
-        Copy-Item $PSFilePath -Destination "$ScriptsPath\SetupComplete.ps1.bak"
-    }
-    New-Item -Path $BatFilePath -ItemType File -Force | Out-Null
-    $CustomActionContent = New-Object system.text.stringbuilder
-    [void]$CustomActionContent.Append('%windir%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy ByPass -File C:\OSDCloud\Scripts\SetupComplete\SetupComplete.ps1')
-    Add-Content -Path $BatFilePath -Value $CustomActionContent.ToString()
-
-    # Create PowerShell File to do actions
-    New-Item -Path $PSFilePath -ItemType File -Force | Out-Null
-    Add-Content -Path $PSFilePath "Write-Output 'Starting SetupComplete HOPE Script Process'"
-    Add-Content -Path $PSFilePath "Write-Output 'iex (irm deploy.tighenet.com)'"
-    Add-Content -Path $PSFilePath 'if ((Test-WebConnection) -ne $true) { Write-Error "No Internet, Sleeping 2 Minutes"; Start-Sleep -Seconds 120 }'
-    Add-Content -Path $PSFilePath 'iex (irm deploy.tighenet.com)'
-}
 #endregion
 if ($env:SystemDrive -eq 'X:') {
     $LogName = "Hope-$((Get-Date).ToString('yyyy-MM-dd-HHmmss')).log"
     Start-Transcript -Path $env:TEMP\$LogName -Append -Force
 }
 Write-SectionHeader -Message "Starting $ScriptName $ScriptVersion"
-write-host "Added Function Create-SetupCompleteOSDCloudFiles" -ForegroundColor Green
+write-host "Added Function New-SetupCompleteOSDCloudFiles" -ForegroundColor Green
 
 
 <#
@@ -189,7 +138,7 @@ if ($env:SystemDrive -eq 'X:') {
     
     #Just go ahead and create the Setup Complete files on the C Drive in the correct Location now that OSDCloud is done in WinPE
     Write-SectionHeader -Message "Creating Custom SetupComplete Files for Hope"
-    Create-SetupCompleteOSDCloudFiles
+    New-SetupCompleteOSDCloudFiles
 
     if (Test-Path -Path $env:TEMP\$LogName){
         Write-DarkGrayHost -Message "Copying Log to C:\OSDCloud\Logs"
@@ -284,5 +233,5 @@ if ($env:SystemDrive -ne 'X:') {
     Write-Host -ForegroundColor Gray "**Setting TimeZone based on IP**"
     Set-TimeZoneFromIP
 
-    Write-SectionHeader -Message  "**Completed deploy.tighenet.com sub script**" 
+    Write-SectionHeader -Message  "**Completed Hope.tighenet.com sub script**" 
 }
