@@ -7,56 +7,57 @@ $ScriptName = 'deploy.tighenet.com'
 $ScriptVersion = '25.1.22.1'
 
 
-#region Initialization
-function Write-DarkGrayDate {
-    [CmdletBinding()]
-    param (
-        [Parameter(Position = 0)]
-        [System.String]
-        $Message
-    )
-    if ($Message) {
-        Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) $Message"
-    } else {
-        Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) "
+    #region Initialization
+    function Write-DarkGrayDate {
+        [CmdletBinding()]
+        param (
+            [Parameter(Position = 0)]
+            [System.String]
+            $Message
+        )
+        if ($Message) {
+            Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) $Message"
+        }
+        else {
+            Write-Host -ForegroundColor DarkGray "$((Get-Date).ToString('yyyy-MM-dd-HHmmss')) " -NoNewline
+        }
     }
-}
-function Write-DarkGrayHost {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [System.String]
-        $Message
-    )
-    Write-Host -ForegroundColor DarkGray $Message
-}
-function Write-DarkGrayLine {
-    [CmdletBinding()]
-    param ()
-    Write-Host -ForegroundColor DarkGray '========================================================================='
-}
-function Write-SectionHeader {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [System.String]
-        $Message
-    )
-    Write-DarkGrayLine
-    Write-DarkGrayDate -Message $Message
-    Write-Host -ForegroundColor Cyan $Message
-}
-function Write-SectionSuccess {
-    [CmdletBinding()]
-    param (
-        [Parameter(Position = 0)]
-        [System.String]
-        $Message = 'Success!'
-    )
-    Write-DarkGrayDate
-    Write-Host -ForegroundColor Green $Message
-}
-#endregion
+    function Write-DarkGrayHost {
+        [CmdletBinding()]
+        param (
+            [Parameter(Mandatory = $true, Position = 0)]
+            [System.String]
+            $Message
+        )
+        Write-Host -ForegroundColor DarkGray $Message
+    }
+    function Write-DarkGrayLine {
+        [CmdletBinding()]
+        param ()
+        Write-Host -ForegroundColor DarkGray '========================================================================='
+    }
+    function Write-SectionHeader {
+        [CmdletBinding()]
+        param (
+            [Parameter(Mandatory = $true, Position = 0)]
+            [System.String]
+            $Message
+        )
+        Write-DarkGrayLine
+        Write-DarkGrayDate
+        Write-Host -ForegroundColor Cyan $Message
+    }
+    function Write-SectionSuccess {
+        [CmdletBinding()]
+        param (
+            [Parameter(Position = 0)]
+            [System.String]
+            $Message = 'Success!'
+        )
+        Write-DarkGrayDate
+        Write-Host -ForegroundColor Green $Message
+    }
+    #endregion
 
 iex (irm functions.tighenet.com)
 #region functions
@@ -105,7 +106,7 @@ Function Restore-SetupCompleteOriginal {
 }
 #>
 
-function New-SetupCompleteOSDCloudFiles{
+function Create-SetupCompleteOSDCloudFiles{
     
     $SetupCompletePath = "C:\OSDCloud\Scripts\SetupComplete"
     $ScriptsPath = $SetupCompletePath
@@ -142,7 +143,7 @@ if ($env:SystemDrive -eq 'X:') {
     Start-Transcript -Path $env:TEMP\$LogName -Append -Force
 }
 Write-SectionHeader -Message "Starting $ScriptName $ScriptVersion"
-Write-DarkGrayHost -Message "Added Function New-SetupCompleteOSDCloudFiles"
+write-host "Added Function Create-SetupCompleteOSDCloudFiles" -ForegroundColor Green
 
 
 <#
@@ -181,7 +182,7 @@ if ($env:SystemDrive -eq 'X:') {
     
     #Just go ahead and create the Setup Complete files on the C Drive in the correct Location now that OSDCloud is done in WinPE
     Write-SectionHeader -Message "Creating Custom SetupComplete Files for Hope"
-    New-SetupCompleteOSDCloudFiles
+    Create-SetupCompleteOSDCloudFiles
 
     if (Test-Path -Path $env:TEMP\$LogName){
         Write-DarkGrayHost -Message "Copying Log to C:\OSDCloud\Logs"
@@ -196,7 +197,7 @@ if ($env:SystemDrive -ne 'X:') {
     Set-ExecutionPolicy Bypass -Force
 
     #Setup Post Actions Scheduled Task
-    iex (irm "postactiontask.tighenet.com")
+    iex (irm "https://raw.githubusercontent.com/gwblok/garytown/master/Dev/CloudScripts/PostActionsTask.ps1")
 
     #Disable Auto Bitlocker
     New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\BitLocker -Name PreventDeviceEncryption -PropertyType dword -Value 1 -Force
